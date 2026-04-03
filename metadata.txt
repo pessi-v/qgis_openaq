@@ -1,0 +1,18 @@
+[general]
+name=OpenAQ Air Quality
+qgisMinimumVersion=3.28
+qgisMaximumVersion=4.99
+description=Download, cache, and visualize air quality data from the OpenAQ v3 API
+version=0.1.0
+author=
+email=
+about=Query monitoring stations and sensor measurements from OpenAQ v3 within a drawn bounding box or radius. Data is cached locally so previously fetched queries can be reloaded without re-fetching. Supports graduated styling based on WHO 2021 thresholds and IDW interpolation via the QGIS processing framework.
+tracker=
+repository=
+tags=air quality,openaq,pollution,pm25,pm10,no2,o3,so2,sensors
+homepage=
+category=Web
+icon=resources/icon.png
+experimental=True
+deprecated=False
+hasProcessingProvider=False

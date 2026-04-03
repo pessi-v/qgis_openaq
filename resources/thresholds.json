@@ -1,0 +1,74 @@
+{
+  "_source": "WHO Air Quality Guidelines 2021",
+  "_note": "Breakpoints are in each parameter's native units (µg/m³ except CO which is mg/m³). Colors follow the US AQI palette.",
+  "parameters": {
+    "pm25": {
+      "display_name": "PM2.5",
+      "units": "µg/m³",
+      "breakpoints": [
+        {"max":  5.0, "label": "Good",                     "color": "#00e400"},
+        {"max": 15.0, "label": "Fair",                     "color": "#ffff00"},
+        {"max": 25.0, "label": "Unhealthy (Sensitive)",    "color": "#ff7e00"},
+        {"max": 50.0, "label": "Unhealthy",                "color": "#ff0000"},
+        {"max": 75.0, "label": "Very Unhealthy",           "color": "#8f3f97"},
+        {"max": 1e9,  "label": "Hazardous",                "color": "#7e0023"}
+      ]
+    },
+    "pm10": {
+      "display_name": "PM10",
+      "units": "µg/m³",
+      "breakpoints": [
+        {"max":  15.0, "label": "Good",                    "color": "#00e400"},
+        {"max":  45.0, "label": "Fair",                    "color": "#ffff00"},
+        {"max":  75.0, "label": "Unhealthy (Sensitive)",   "color": "#ff7e00"},
+        {"max": 150.0, "label": "Unhealthy",               "color": "#ff0000"},
+        {"max": 250.0, "label": "Very Unhealthy",          "color": "#8f3f97"},
+        {"max":  1e9,  "label": "Hazardous",               "color": "#7e0023"}
+      ]
+    },
+    "no2": {
+      "display_name": "NO₂",
+      "units": "µg/m³",
+      "breakpoints": [
+        {"max":  10.0, "label": "Good",                    "color": "#00e400"},
+        {"max":  25.0, "label": "Fair",                    "color": "#ffff00"},
+        {"max": 200.0, "label": "Unhealthy",               "color": "#ff7e00"},
+        {"max": 400.0, "label": "Very Unhealthy",          "color": "#ff0000"},
+        {"max":  1e9,  "label": "Hazardous",               "color": "#7e0023"}
+      ]
+    },
+    "o3": {
+      "display_name": "O₃",
+      "units": "µg/m³",
+      "breakpoints": [
+        {"max":  60.0, "label": "Good",                    "color": "#00e400"},
+        {"max": 100.0, "label": "Fair",                    "color": "#ffff00"},
+        {"max": 140.0, "label": "Unhealthy (Sensitive)",   "color": "#ff7e00"},
+        {"max": 180.0, "label": "Unhealthy",               "color": "#ff0000"},
+        {"max":  1e9,  "label": "Very Unhealthy",          "color": "#8f3f97"}
+      ]
+    },
+    "so2": {
+      "display_name": "SO₂",
+      "units": "µg/m³",
+      "breakpoints": [
+        {"max":  40.0, "label": "Good",                    "color": "#00e400"},
+        {"max": 125.0, "label": "Fair",                    "color": "#ffff00"},
+        {"max": 250.0, "label": "Unhealthy",               "color": "#ff7e00"},
+        {"max": 500.0, "label": "Very Unhealthy",          "color": "#ff0000"},
+        {"max":  1e9,  "label": "Hazardous",               "color": "#7e0023"}
+      ]
+    },
+    "co": {
+      "display_name": "CO",
+      "units": "mg/m³",
+      "breakpoints": [
+        {"max":  4.0,  "label": "Good",                    "color": "#00e400"},
+        {"max": 10.0,  "label": "Fair",                    "color": "#ffff00"},
+        {"max": 35.0,  "label": "Unhealthy",               "color": "#ff7e00"},
+        {"max": 100.0, "label": "Very Unhealthy",          "color": "#ff0000"},
+        {"max":  1e9,  "label": "Hazardous",               "color": "#7e0023"}
+      ]
+    }
+  }
+}
