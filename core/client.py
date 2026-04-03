@@ -11,11 +11,10 @@ Fetch pattern
 2. For each sensor matching the requested parameters:
    GET /v3/sensors/{id}/measurements[/hourly|/daily]
 
-NOTE on coordinate ordering: OpenAQ uses longitude-first throughout.
-  bbox      = minLon,minLat,maxLon,maxLat
-  coordinates = lon,lat
-This is consistent with QGIS's (x, y) geometry convention but is the
-*reverse* of the common geographic "lat, lon" reading order.
+NOTE on coordinate ordering: OpenAQ v3 is inconsistent between endpoints.
+  bbox        = minLon,minLat,maxLon,maxLat  (longitude-first)
+  coordinates = lat,lon                      (geographic order, latitude-first)
+See CircleFilter.to_api_params() for the circle-query encoding.
 """
 from __future__ import annotations
 

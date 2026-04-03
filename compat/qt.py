@@ -16,7 +16,7 @@ try:
         QDateTime, QDate, QSize, QObject,
     )
     from qgis.PyQt.QtWidgets import (
-        QDialog, QComboBox, QProgressBar, QWidget, QLabel, QLineEdit,
+        QDialog, QDockWidget, QComboBox, QProgressBar, QWidget, QLabel, QLineEdit,
         QPushButton, QCheckBox, QRadioButton, QGroupBox,
         QHBoxLayout, QVBoxLayout, QFormLayout, QGridLayout,
         QListWidget, QListWidgetItem, QSizePolicy, QAction,
@@ -39,7 +39,7 @@ except ImportError:
             QDateTime, QDate, QSize, QObject,
         )
         from PyQt6.QtWidgets import (
-            QDialog, QComboBox, QProgressBar, QWidget, QLabel, QLineEdit,
+            QDialog, QDockWidget, QComboBox, QProgressBar, QWidget, QLabel, QLineEdit,
             QPushButton, QCheckBox, QRadioButton, QGroupBox,
             QHBoxLayout, QVBoxLayout, QFormLayout, QGridLayout,
             QListWidget, QListWidgetItem, QSizePolicy,
@@ -55,7 +55,7 @@ except ImportError:
             QDateTime, QDate, QSize, QObject,
         )
         from PyQt5.QtWidgets import (
-            QDialog, QComboBox, QProgressBar, QWidget, QLabel, QLineEdit,
+            QDialog, QDockWidget, QComboBox, QProgressBar, QWidget, QLabel, QLineEdit,
             QPushButton, QCheckBox, QRadioButton, QGroupBox,
             QHBoxLayout, QVBoxLayout, QFormLayout, QGridLayout,
             QListWidget, QListWidgetItem, QSizePolicy, QAction,

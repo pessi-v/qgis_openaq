@@ -31,9 +31,9 @@ from qgis.core import (
 from qgis.gui import QgsMapLayerComboBox
 
 from ..compat.qt import (
-    QButtonGroup, QCheckBox, QColor, QDialog, QDialogButtonBox,
-    QFrame, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem,
-    QMessageBox, QProgressBar, QPushButton, QRadioButton, QScrollArea,
+    QCheckBox, QColor, QDialog, QFrame, QGroupBox,
+    QHBoxLayout, QLabel, QListWidget, QListWidgetItem,
+    QMessageBox, QProgressBar, QPushButton, QScrollArea,
     QSettings, QSizePolicy, QVBoxLayout, QWidget, pyqtSignal,
 )
 from ..core.cache import Cache
@@ -51,11 +51,10 @@ _SETTINGS_PREFIX = "openaq/"
 _DEFAULT_POLLUTANTS = ["pm25", "pm10", "no2", "o3", "so2", "co"]
 
 
-class MainDialog(QDialog):
+class MainDialog(QWidget):
     def __init__(self, iface, parent=None) -> None:
         super().__init__(parent)
         self.iface = iface
-        self.setWindowTitle("OpenAQ Air Quality")
         self.setMinimumWidth(520)
 
         self._rate_limiter = RateLimiter()
@@ -86,15 +85,6 @@ class MainDialog(QDialog):
 
         # Spatial filter row
         spatial_row = QHBoxLayout()
-        spatial_row.addWidget(QLabel("Mode:"))
-        self._mode_group = QButtonGroup(self)
-        self._rect_rb = QRadioButton("Rectangle")
-        self._circle_rb = QRadioButton("Circle")
-        self._rect_rb.setChecked(True)
-        self._mode_group.addButton(self._rect_rb)
-        self._mode_group.addButton(self._circle_rb)
-        spatial_row.addWidget(self._rect_rb)
-        spatial_row.addWidget(self._circle_rb)
         self._draw_btn = QPushButton("Draw on Map")
         self._draw_btn.clicked.connect(self._start_drawing)
         self._extent_btn = QPushButton("Use Map Extent")
@@ -256,12 +246,9 @@ class MainDialog(QDialog):
 
     def _start_drawing(self) -> None:
         canvas = self.iface.mapCanvas()
-        circular = self._circle_rb.isChecked()
         if self._bbox_tool is None:
-            self._bbox_tool = BboxTool(canvas, circular=circular)
+            self._bbox_tool = BboxTool(canvas, circular=False)
             self._bbox_tool.geometry_selected.connect(self._on_filter_drawn)
-        else:
-            self._bbox_tool.set_circular(circular)
 
         self._prev_tool = canvas.mapTool()
         canvas.setMapTool(self._bbox_tool)
@@ -419,10 +406,44 @@ class MainDialog(QDialog):
         if not isinstance(layer, QgsVectorLayer):
             QMessageBox.warning(self, "IDW", "Please select a point vector layer.")
             return
-        from ..tasks.interpolation import run_idw
-        result = run_idw(layer, value_field="value")
-        if result is None:
+        mask_layer = self._make_circle_mask_layer()
+        from ..tasks.interpolation import run_idw_temporal
+        rasters = run_idw_temporal(layer, value_field="value", mask_layer=mask_layer)
+        if not rasters:
             QMessageBox.warning(self, "IDW", "Interpolation failed or returned no output.")
+        else:
+            from qgis.core import Qgis
+            self.iface.messageBar().pushMessage(
+                "OpenAQ",
+                f"IDW: created {len(rasters)} raster(s). Use the Temporal Controller to animate.",
+                Qgis.MessageLevel.Info, 7,
+            )
+
+    def _make_circle_mask_layer(self) -> "Optional[QgsVectorLayer]":
+        """Return an in-memory polygon layer for the current CircleFilter, or None."""
+        from ..core.models import CircleFilter
+        if not isinstance(self._current_filter, CircleFilter):
+            return None
+        import math
+        from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer
+        cf = self._current_filter
+        lat_rad = math.radians(cf.lat)
+        delta_lat = cf.radius_m / 111320.0
+        delta_lon = cf.radius_m / (111320.0 * math.cos(lat_rad))
+        segments = 128
+        ring = [
+            QgsPointXY(
+                cf.lon + delta_lon * math.cos(2 * math.pi * i / segments),
+                cf.lat + delta_lat * math.sin(2 * math.pi * i / segments),
+            )
+            for i in range(segments)
+        ]
+        ring.append(ring[0])  # close the ring
+        mask = QgsVectorLayer("Polygon?crs=EPSG:4326", "circle_mask", "memory")
+        feat = QgsFeature()
+        feat.setGeometry(QgsGeometry.fromPolygonXY([ring]))
+        mask.dataProvider().addFeatures([feat])
+        return mask
 
     def _export(self, fmt: str) -> None:
         from ..compat.qt import QApplication

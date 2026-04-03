@@ -52,7 +52,8 @@ class BboxFilter:
 class CircleFilter:
     """Circular spatial filter (centre + radius).
 
-    NOTE: OpenAQ uses longitude-first: coordinates=lon,lat.
+    NOTE: OpenAQ v3 expects coordinates as lat,lon (geographic order),
+    unlike bbox which is longitude-first.
     Radius is in metres, clamped to 1–25 000 m by the API.
     """
     lon: float
@@ -61,7 +62,7 @@ class CircleFilter:
 
     def to_api_params(self) -> dict:
         return {
-            "coordinates": f"{self.lon},{self.lat}",
+            "coordinates": f"{self.lat},{self.lon}",
             "radius": max(1, min(25000, self.radius_m)),
         }
 

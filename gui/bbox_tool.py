@@ -29,7 +29,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsMapCanvas, QgsMapTool, QgsRubberBand
 
-from ..compat.qt import QColor, QCursor, pyqtSignal
+from ..compat.qt import QColor, QCursor, Qt, pyqtSignal
 
 _RUBBER_COLOR = QColor(255, 100, 0, 120)
 _CIRCLE_SEGMENTS = 64
@@ -79,6 +79,13 @@ class BboxTool(QgsMapTool):
         else:
             self._emit_bbox(self._start, end)
         self._start = None
+
+    def keyPressEvent(self, event) -> None:
+        if event.key() == Qt.Key.Key_Escape:
+            self._reset()
+            self.canvas().unsetMapTool(self)
+        else:
+            super().keyPressEvent(event)
 
     def deactivate(self) -> None:
         self._reset()
@@ -146,7 +153,7 @@ class BboxTool(QgsMapTool):
         edge_wgs = transform.transform(edge)
         da = QgsDistanceArea()
         da.setSourceCrs(wgs84, QgsProject.instance().transformContext())
-        da.setEllipsoid(QgsProject.instance().ellipsoid())
+        da.setEllipsoid("WGS84")
         radius_m = int(da.measureLine(centre_wgs, edge_wgs))
 
         # Clamp to API limits (1–25 000 m).
