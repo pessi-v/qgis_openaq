@@ -51,6 +51,10 @@ Then enable the plugin in **Plugins → Manage and Install Plugins**.
 
 IDW interpolation fills spatial gaps between monitoring stations using inverse distance weighting. It does not account for local pollution sources (traffic, industry) or atmospheric dispersion. Treat the output as a rough spatial overview, not a measurement.
 
+## Icon attribution
+
+[Air quality icon created by Aranagraphics](https://www.flaticon.com/free-icons/air-quality)
+
 ## License
 
 MIT
