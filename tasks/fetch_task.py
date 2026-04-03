@@ -252,7 +252,7 @@ def _apply_styling(
     for bp in breakpoints:
         upper = bp["max"]
         symbol = QgsMarkerSymbol.createSimple(
-            {"color": bp["color"], "size": "1", **outline}
+            {"color": bp["color"], "size": "2", **outline}
         )
         ranges.append(QgsRendererRange(lower, upper, symbol, bp["label"]))
         lower = upper
