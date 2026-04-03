@@ -43,7 +43,7 @@ class BboxFilter:
 
     def description(self) -> str:
         return (
-            f"Rect [{self.min_lon:.4f},{self.min_lat:.4f} → "
+            f"[{self.min_lon:.4f},{self.min_lat:.4f} → "
             f"{self.max_lon:.4f},{self.max_lat:.4f}]"
         )
 

@@ -232,12 +232,18 @@ class OpenAQClient:
 # Response-parsing helpers
 # ------------------------------------------------------------------
 
+def _clean_display_name(name: str) -> str:
+    """Strip trailing ' mass' (case-insensitive) that OpenAQ appends to some pollutant names."""
+    import re
+    return re.sub(r"\s+mass$", "", name, flags=re.IGNORECASE).strip()
+
+
 def _parse_parameter(raw: dict) -> Parameter:
     return Parameter(
         id=raw["id"],
         name=raw.get("name", ""),
         units=raw.get("units", ""),
-        display_name=raw.get("displayName") or raw.get("name", ""),
+        display_name=_clean_display_name(raw.get("displayName") or raw.get("name", "")),
     )
 
 

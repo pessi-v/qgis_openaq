@@ -232,13 +232,28 @@ def _apply_styling(
     if not param_key:
         return
 
+    _OUTLINE_COLORS = {
+        "pm25": "#A78BFA",
+        "pm10": "#F9A8A0",
+        "no2":  "#C45A3C",
+        "o3":   "#C0D8F0",
+        "so2":  "#FBBF24",
+        "co":   "#94A3B8",
+    }
+    outline_color = _OUTLINE_COLORS.get(param_key)
+    if outline_color:
+        outline = {"outline_color": outline_color, "outline_width": "0.1"}
+    else:
+        outline = {"outline_style": "no"}
+
     breakpoints = thresholds["parameters"][param_key]["breakpoints"]
     ranges = []
     lower = 0.0
     for bp in breakpoints:
         upper = bp["max"]
-        color = QColor(bp["color"])
-        symbol = QgsMarkerSymbol.createSimple({"color": bp["color"], "size": "4"})
+        symbol = QgsMarkerSymbol.createSimple(
+            {"color": bp["color"], "size": "1", **outline}
+        )
         ranges.append(QgsRendererRange(lower, upper, symbol, bp["label"]))
         lower = upper
 

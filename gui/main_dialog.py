@@ -252,17 +252,14 @@ class MainDialog(QWidget):
 
         self._prev_tool = canvas.mapTool()
         canvas.setMapTool(self._bbox_tool)
-        self.hide()  # step aside so the canvas is accessible
+        canvas.setFocus()
 
     def _on_filter_drawn(self, spatial_filter: SpatialFilter) -> None:
         self._current_filter = spatial_filter
         self._filter_label.setText(spatial_filter.description())
         self._filter_label.setStyleSheet("")
-        # Restore previous tool and show dialog again.
         if self._prev_tool:
             self.iface.mapCanvas().setMapTool(self._prev_tool)
-        self.show()
-        self.raise_()
 
     def _use_map_extent(self) -> None:
         from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform
@@ -418,6 +415,18 @@ class MainDialog(QWidget):
                 f"IDW: created {len(rasters)} raster(s). Use the Temporal Controller to animate.",
                 Qgis.MessageLevel.Info, 7,
             )
+            from ..compat.qt import QTimer
+            QTimer.singleShot(200, lambda: self._configure_idw_legend(rasters))
+
+    def _configure_idw_legend(self, rasters: list) -> None:
+        """Show the colour gradient once (first raster expanded); collapse all others."""
+        from qgis.core import QgsProject
+
+        root = QgsProject.instance().layerTreeRoot()
+        for i, raster in enumerate(rasters):
+            node = root.findLayer(raster.id())
+            if node is not None:
+                node.setExpanded(i == 0)
 
     def _make_circle_mask_layer(self) -> "Optional[QgsVectorLayer]":
         """Return an in-memory polygon layer for the current CircleFilter, or None."""

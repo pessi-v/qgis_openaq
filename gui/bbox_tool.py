@@ -59,7 +59,7 @@ class BboxTool(QgsMapTool):
 
     def canvasPressEvent(self, event) -> None:
         self._start = self.toMapCoordinates(event.pos())
-        self._rubber.reset(QgsWkbTypes.GeometryType.PolygonGeometry)
+        self._rubber.reset(QgsWkbTypes.GeometryType.PolygonGeometry)  # clear previous selection on new draw
 
     def canvasMoveEvent(self, event) -> None:
         if self._start is None:

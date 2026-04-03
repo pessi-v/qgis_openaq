@@ -386,6 +386,32 @@ def _apply_raster_color_ramp(layer: QgsRasterLayer, parameter_name: str | None) 
     layer.setRenderer(renderer)
     layer.triggerRepaint()
 
+    # Replace the default legend with a filtered one that omits "Band 1 (Gray)".
+    _apply_filtered_legend(layer)
+
+
+def _apply_filtered_legend(layer: QgsRasterLayer) -> None:
+    """Set a custom QgsMapLayerLegend that drops any node labelled '(gray)'."""
+    try:
+        from qgis.core import QgsMapLayerLegend
+
+        inner = QgsMapLayerLegend.defaultRasterLegend(layer)
+
+        class _NoGrayLegend(QgsMapLayerLegend):
+            def createLayerTreeModelLegendNodes(self, node_layer):
+                return [
+                    n for n in inner.createLayerTreeModelLegendNodes(node_layer)
+                    if "gray" not in str(n.data(0) or "").lower()
+                ]
+
+        layer.setLegend(_NoGrayLegend())
+    except Exception:
+        import traceback
+        QgsMessageLog.logMessage(
+            f"IDW: could not apply filtered legend:\n{traceback.format_exc()}",
+            "OpenAQ", Qgis.MessageLevel.Warning,
+        )
+
 
 def _color_items_for_parameter(
     parameter_name: str | None,
